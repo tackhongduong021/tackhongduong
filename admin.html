@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin – Đăng chương mới</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#16101f;--bg2:#1e1430;--surface:#261a38;--border:#3a2856;--pink:#e8a8bc;--pink2:#f5ccd8;--gold:#c8a85a;--text:#ded0ee;--text2:#a898bc;--text3:#706088;--accent:#9b5fc0;--green:#6fcf97;--red:#cf6f7f}
+body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-serif;min-height:100vh}
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 1.5rem}
+.hdr{max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--pink2);text-decoration:none}
+.back{font-size:.8rem;color:var(--text2);text-decoration:none;border:1px solid var(--border);padding:.3rem .7rem;background:var(--surface)}
+.back:hover{color:var(--pink2);border-color:var(--accent)}
+main{max-width:800px;margin:2rem auto;padding:0 1.5rem}
+h2{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--pink2);margin-bottom:.5rem}
+.subtitle{font-size:.82rem;color:var(--text2);margin-bottom:2rem}
+.card{background:var(--surface);border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
+.card h3{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:1.1rem;border-bottom:1px solid var(--border);padding-bottom:.6rem}
+label{font-size:.82rem;color:var(--text2);display:block;margin-bottom:.35rem}
+input[type=text],textarea,select{
+  width:100%;background:var(--bg2);border:1px solid var(--border);
+  color:var(--text);padding:.55rem .8rem;font-family:inherit;font-size:.88rem;
+  outline:none;margin-bottom:1rem;resize:vertical;
+}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{min-height:200px;line-height:1.7}
+.drop-zone{
+  border:2px dashed var(--border);padding:2.5rem 1rem;text-align:center;
+  cursor:pointer;transition:all .2s;margin-bottom:1rem;
+}
+.drop-zone:hover,.drop-zone.over{border-color:var(--accent);background:rgba(155,95,192,.08)}
+.drop-zone p{font-size:.88rem;color:var(--text2)}
+.drop-zone .dz-icon{font-size:2rem;margin-bottom:.5rem}
+.btn{
+  background:var(--accent);border:none;color:#fff;padding:.55rem 1.5rem;
+  cursor:pointer;font-family:inherit;font-size:.88rem;transition:all .2s;
+}
+.btn:hover{opacity:.85}
+.btn-outline{background:var(--surface);border:1px solid var(--border);color:var(--text2)}
+.btn-outline:hover{border-color:var(--accent);color:var(--pink2)}
+.btn-danger{background:var(--red)}
+.btns{display:flex;gap:.75rem;flex-wrap:wrap}
+.status{font-size:.82rem;padding:.45rem .8rem;margin-bottom:1rem;display:none}
+.status.ok{display:block;background:rgba(111,207,151,.15);color:var(--green);border:1px solid rgba(111,207,151,.3)}
+.status.err{display:block;background:rgba(207,111,127,.15);color:var(--red);border:1px solid rgba(207,111,127,.3)}
+.preview-box{
+  background:var(--bg);border:1px solid var(--border);
+  padding:1rem;max-height:300px;overflow-y:auto;
+  font-size:.88rem;line-height:1.8;color:var(--text2);
+  white-space:pre-wrap;word-break:break-word;display:none;
+  margin-top:1rem;
+}
+.ch-list-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.5rem .75rem;border-bottom:1px solid var(--border);font-size:.82rem;
+}
+.ch-list-item:last-child{border-bottom:none}
+.ch-list-item .ch-name{color:var(--text2)}
+.ch-list-item .ch-actions{display:flex;gap:.4rem}
+.mini-btn{
+  background:var(--bg2);border:1px solid var(--border);color:var(--text2);
+  padding:.2rem .5rem;cursor:pointer;font-size:.72rem;font-family:inherit;
+}
+.mini-btn:hover{border-color:var(--accent);color:var(--pink2)}
+.mini-btn.del:hover{border-color:var(--red);color:var(--red)}
+#chapter-list-preview{max-height:300px;overflow-y:auto}
+.info-note{font-size:.78rem;color:var(--text3);margin-top:.5rem;line-height:1.5}
+</style>
+</head>
+<body>
+
+<header>
+<div class="hdr">
+  <a class="logo" href="index.html">Tắc không đường</a>
+  <a class="back" href="index.html">← Về trang chủ</a>
+</div>
+</header>
+
+<main>
+  <h2>Trang Admin – Quản lý chương</h2>
+  <p class="subtitle">Đăng chương mới hoặc chỉnh sửa nội dung. Dữ liệu lưu trong trình duyệt (localStorage).</p>
+
+  <!-- UPLOAD DOCX -->
+  <div class="card">
+    <h3>Đăng chương từ file .docx</h3>
+    <p class="info-note" style="margin-bottom:1rem">⚠ Thư viện đọc .docx cần kết nối internet. File sẽ được đọc trực tiếp trên trình duyệt, không upload lên server.</p>
+
+    <label>Chọn file Word (.docx)</label>
+    <div class="drop-zone" id="drop-zone">
+      <div class="dz-icon">📄</div>
+      <p>Kéo thả file .docx vào đây hoặc <strong>click để chọn</strong></p>
+      <input type="file" id="file-input" accept=".docx" style="display:none"/>
+    </div>
+
+    <div class="status" id="upload-status"></div>
+
+    <label>Tiêu đề chương (tự động điền từ file, có thể sửa)</label>
+    <input type="text" id="ch-title-input" placeholder="VD: Chương 255: Tên chương"/>
+
+    <label>Nội dung (tự động điền, có thể sửa)</label>
+    <textarea id="ch-content-input" placeholder="Nội dung chương sẽ hiện ở đây sau khi chọn file..."></textarea>
+
+    <div class="btns">
+      <button class="btn" onclick="saveChapter()">💾 Lưu chương</button>
+      <button class="btn btn-outline" onclick="previewChapter()">👁 Xem trước</button>
+      <button class="btn btn-outline" onclick="clearForm()">✕ Xóa form</button>
+    </div>
+    <div class="preview-box" id="preview-box"></div>
+  </div>
+
+  <!-- MANUAL ADD -->
+  <div class="card">
+    <h3>Thêm chương thủ công</h3>
+    <label>Tiêu đề chương</label>
+    <input type="text" id="manual-title" placeholder="Chương 255: ..."/>
+    <label>Nội dung</label>
+    <textarea id="manual-content" placeholder="Dán nội dung chương vào đây..." style="min-height:150px"></textarea>
+    <button class="btn" onclick="saveManual()">💾 Lưu</button>
+    <div class="status" id="manual-status"></div>
+  </div>
+
+  <!-- CHAPTER LIST -->
+  <div class="card">
+    <h3>Chương đã thêm cục bộ (<span id="local-count">0</span> chương)</h3>
+    <p class="info-note" style="margin-bottom:1rem">Các chương này được thêm qua admin và lưu trong trình duyệt. Để đưa vào web chính thức, cần copy nội dung vào file chapter.html.</p>
+    <div id="chapter-list-preview"></div>
+    <div class="btns" style="margin-top:1rem">
+      <button class="btn btn-outline" onclick="exportJSON()">⬇ Xuất JSON</button>
+      <button class="btn btn-danger" onclick="clearAll()">🗑 Xóa tất cả</button>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+// ── Drop zone ──
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('over');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) processFile(fileInput.files[0]);
+});
+
+function processFile(file) {
+  if (!file.name.endsWith('.docx')) {
+    showStatus('upload-status', 'err', 'Chỉ hỗ trợ file .docx!');
+    return;
+  }
+  showStatus('upload-status', 'ok', '⏳ Đang đọc file...');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    mammoth.extractRawText({ arrayBuffer: e.target.result })
+      .then(result => {
+        const text = result.value.trim();
+        // Try to extract title from first line
+        const lines = text.split('\n').filter(l => l.trim());
+        const firstLine = lines[0] || '';
+        if (firstLine.includes('Chương') || firstLine.includes('chương')) {
+          document.getElementById('ch-title-input').value = firstLine.trim();
+          document.getElementById('ch-content-input').value = lines.slice(1).join('\n').trim();
+        } else {
+          document.getElementById('ch-content-input').value = text;
+        }
+        showStatus('upload-status', 'ok', '✓ Đọc file thành công! Kiểm tra nội dung và nhấn Lưu chương.');
+      })
+      .catch(err => showStatus('upload-status', 'err', 'Lỗi đọc file: ' + err.message));
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ── Save chapter ──
+function saveChapter() {
+  const title = document.getElementById('ch-title-input').value.trim();
+  const content = document.getElementById('ch-content-input').value.trim();
+  if (!title || !content) { showStatus('upload-status', 'err', 'Vui lòng nhập đủ tiêu đề và nội dung!'); return; }
+  addToLocal(title, content);
+  showStatus('upload-status', 'ok', '✓ Đã lưu chương: ' + title);
+  clearForm();
+}
+
+function saveManual() {
+  const title = document.getElementById('manual-title').value.trim();
+  const content = document.getElementById('manual-content').value.trim();
+  if (!title || !content) { showStatus('manual-status', 'err', 'Vui lòng nhập đủ tiêu đề và nội dung!'); return; }
+  addToLocal(title, content);
+  showStatus('manual-status', 'ok', '✓ Đã lưu: ' + title);
+  document.getElementById('manual-title').value = '';
+  document.getElementById('manual-content').value = '';
+}
+
+function addToLocal(title, content) {
+  const chapters = getLocal();
+  chapters.push({ id: Date.now(), t: title, c: content, added: new Date().toLocaleString('vi-VN') });
+  localStorage.setItem('admin_chapters', JSON.stringify(chapters));
+  renderChapterList();
+}
+
+function getLocal() {
+  try { return JSON.parse(localStorage.getItem('admin_chapters') || '[]'); }
+  catch { return []; }
+}
+
+function renderChapterList() {
+  const chapters = getLocal();
+  document.getElementById('local-count').textContent = chapters.length;
+  const el = document.getElementById('chapter-list-preview');
+  if (!chapters.length) { el.innerHTML = '<p style="font-size:.82rem;color:var(--text3);padding:.5rem 0">Chưa có chương nào được thêm.</p>'; return; }
+  el.innerHTML = chapters.map((ch, i) =>
+    `<div class="ch-list-item">
+      <span class="ch-name">${ch.t} <span style="color:var(--text3);font-size:.72rem">(${ch.added})</span></span>
+      <div class="ch-actions">
+        <button class="mini-btn" onclick="editChapter(${i})">Sửa</button>
+        <button class="mini-btn del" onclick="deleteChapter(${i})">Xóa</button>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function deleteChapter(i) {
+  if (!confirm('Xóa chương này?')) return;
+  const chs = getLocal(); chs.splice(i,1);
+  localStorage.setItem('admin_chapters', JSON.stringify(chs));
+  renderChapterList();
+}
+
+function editChapter(i) {
+  const chs = getLocal();
+  const ch = chs[i];
+  document.getElementById('ch-title-input').value = ch.t;
+  document.getElementById('ch-content-input').value = ch.c;
+  deleteChapter(i);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function exportJSON() {
+  const chs = getLocal();
+  if (!chs.length) { alert('Chưa có chương nào!'); return; }
+  const blob = new Blob([JSON.stringify(chs, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'chapters_export.json'; a.click();
+}
+
+function clearAll() {
+  if (!confirm('Xóa tất cả chương đã thêm?')) return;
+  localStorage.removeItem('admin_chapters');
+  renderChapterList();
+}
+
+function clearForm() {
+  document.getElementById('ch-title-input').value = '';
+  document.getElementById('ch-content-input').value = '';
+  document.getElementById('preview-box').style.display = 'none';
+  fileInput.value = '';
+}
+
+function previewChapter() {
+  const content = document.getElementById('ch-content-input').value.trim();
+  const box = document.getElementById('preview-box');
+  box.textContent = content || '(Chưa có nội dung)';
+  box.style.display = 'block';
+}
+
+function showStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'status ' + type;
+  el.textContent = msg;
+  if (type === 'ok') setTimeout(() => el.style.display='none', 4000);
+}
+
+renderChapterList();
+</script>
+</body>
+</html>
